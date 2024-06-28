@@ -20,7 +20,7 @@ export default async function userSeeder() {
             },
             {
                 name: 'Test User',
-                email: 'test@mail.com',
+                email: 'user@mail.com',
                 role: 'USER',
                 password: await bcrypt.hash('12345', 10),
                 createdAt: new Date()

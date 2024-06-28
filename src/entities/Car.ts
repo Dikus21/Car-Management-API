@@ -12,6 +12,8 @@ export class Car extends AbstractDate{
     year!:string;
     @Column()
     price!:string;
+    @Column({nullable:true})
+    type?:string;
     @Column()
     image!:string;
     @ManyToOne(() => User, (user) => user.createdCars)

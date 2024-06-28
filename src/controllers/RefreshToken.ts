@@ -3,11 +3,11 @@ import jwt from 'jsonwebtoken';
 import {User} from "../entities/User";
 
 export default class RefreshToken {
-    public async refreshToken(req: any, res: any) {
+    public static async refreshToken(req: any, res: any) {
         try {
             const refreshToken = req.cookies.refreshToken;
             if (refreshToken == null) {
-                return res.status(401).json({error: 'unauthorized'});
+                return res.status(401).json({error: 'Unauthorized: Please Login First'});
             }
             const user = await User.findOne({
                 where: {
@@ -25,9 +25,14 @@ export default class RefreshToken {
                 const userName = decoded.userName;
                 const userEmail = decoded.userEmail;
                 const userRole = decoded.userRole;
-                const accessToken = jwt.sign({userId, userName, userEmail, userRole}, process.env.ACCESS_TOKEN_SECRET!, {
-                    expiresIn: '15s',
+                const accessToken = jwt.sign({userId, userName, userEmail, userRole}, 
+                    process.env.ACCESS_TOKEN_SECRET!, {
+                    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
                 });
+                res.cookie("accessToken", accessToken, {
+                    httpOnly: true,
+                    maxAge: 60 * 60 * 1000,
+                  });
                 res.json({accessToken});
             });
         } catch (error) {

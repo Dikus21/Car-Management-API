@@ -12,19 +12,18 @@ import CarRegister from "../dtos/CarRegister";
 const router = Router();
 const userController = new UserController();
 const carController = new CarController();
-const refreshToken = new RefreshToken();
 
 
 // User routes
 router.post('/user', validateDTO(UserRegister),userController.registerUser);
-router.put('/user/login', userController.loginUser);
-router.get('/user/logout', verifyToken('PUBLIC'),userController.logoutUser);
+router.post('/user/login', userController.loginUser);
+router.post('/user/logout', verifyToken('PUBLIC'),userController.logoutUser);
 router.get('/user/list', verifyToken('ADMIN', 'SUPER_ADMIN'), userController.getAllUsers);
 router.get('/user/profile', verifyToken('PUBLIC'), userController.getUserProfile);
 router.delete('/user/delete', verifyToken('USER', 'ADMIN'), userController.deleteUser);
 
 //refreshToken
-router.get('/refresh-token', refreshToken.refreshToken);
+router.get('/refresh-token', RefreshToken.refreshToken);
 
 // Car routes
 router.post('/car', verifyToken('ADMIN', 'SUPER_ADMIN'),  upload.single("image"), validateDTO(CarRegister),carController.addCar);
