@@ -23,7 +23,7 @@ router.get('/user/profile', verifyToken('PUBLIC'), userController.getUserProfile
 router.delete('/user/delete', verifyToken('USER', 'ADMIN'), userController.deleteUser);
 
 //refreshToken
-router.get('/refresh-token', RefreshToken.refreshToken);
+router.post('/refresh-token', RefreshToken.refreshToken);
 
 // Car routes
 router.post('/car', verifyToken('ADMIN', 'SUPER_ADMIN'),  upload.single("image"), validateDTO(CarRegister),carController.addCar);

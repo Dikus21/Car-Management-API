@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import RefreshToken from "../controllers/RefreshToken";
 
 export default function verifyToken(...allowedRoles: string[]) {
   return (req: any, res: any, next: any) => {

@@ -1,7 +1,8 @@
 import { User } from "../entities/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
+import ErrorTemplate from "../middlewares/ErrorTemplate";
 
 export default class UserController {
   public async registerUser(req: any, res: any) {
@@ -47,7 +48,7 @@ export default class UserController {
     }
   }
 
-  public async loginUser(req: Request, res: Response) {
+  public async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
       const user = await User.findOne({
         where: {
@@ -55,11 +56,11 @@ export default class UserController {
         },
       });
       if (!user) {
-        return res.status(400).json({ error: "Invalid credentials" });
+        throw new ErrorTemplate("Invalid credentials", 400);
       }
       const match = await bcrypt.compare(req.body.password, user!.password);
       if (!match) {
-        return res.status(400).json({ error: "Invalid credentials" });
+        throw new ErrorTemplate("Invalid credentials", 400);
       }
       const userId = user!.id;
       const userName = user!.name;
@@ -69,7 +70,7 @@ export default class UserController {
         { userId, userName, userEmail, userRole },
         process.env.ACCESS_TOKEN_SECRET!,
         {
-          expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
+          expiresIn: "5s",
         }
       );
       const refreshToken = jwt.sign(
@@ -80,9 +81,6 @@ export default class UserController {
         }
       );
 
-      const expiryTime = new Date();
-      expiryTime.setHours(expiryTime.getHours() + 1);
-
       await User.update(userId, { refreshToken: refreshToken });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -90,12 +88,12 @@ export default class UserController {
       });
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        maxAge: 60 * 60 * 1000,
+        maxAge: 5 * 1000,
       });
       res.json({ accessToken });
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      next(error);
     }
   }
 

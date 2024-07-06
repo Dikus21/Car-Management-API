@@ -7,6 +7,7 @@ import router from "./routes/Routes";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
+import errorMiddleware from "./middlewares/ErrorMiddleware";
 dotenv.config();
 
 dataSource
@@ -35,6 +36,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 //Use the router
 app.use(router);
+//Error handling middleware
+app.use(errorMiddleware);
 
 //start server
 app.listen(PORT, () => {

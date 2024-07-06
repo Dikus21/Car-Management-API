@@ -27,11 +27,11 @@ export default class RefreshToken {
                 const userRole = decoded.userRole;
                 const accessToken = jwt.sign({userId, userName, userEmail, userRole}, 
                     process.env.ACCESS_TOKEN_SECRET!, {
-                    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
+                    expiresIn: '5s',
                 });
                 res.cookie("accessToken", accessToken, {
                     httpOnly: true,
-                    maxAge: 60 * 60 * 1000,
+                    maxAge: 5 * 1000,
                   });
                 res.json({accessToken});
             });
