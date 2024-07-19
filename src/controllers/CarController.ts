@@ -1,17 +1,31 @@
 import { Car } from "../entities/Car";
 import { Request, Response } from "express";
+import dataSource from "../config/Database";
 
 export default class CarController {
   public async addCar(req: any, res: any) {
     try {
-      const { model, year, price, type } = req.body;
+      const {
+        model,
+        year,
+        rentPerDay,
+        manufacture,
+        capacity,
+        transmission,
+        withDriver,
+        description,
+      } = req.body;
       const image = req.file ? req.file.filename : null;
       await Car.save({
         model: model,
         year: year,
-        price: price,
-        type: type,
+        capacity: capacity,
+        transmission: transmission,
+        withDriver: withDriver,
+        rentPerDay: rentPerDay,
+        manufacture: manufacture,
         image: image,
+        description: description,
         creator: req.userId,
       });
       return res.json({ message: "Car added successfully!" });
@@ -44,6 +58,41 @@ export default class CarController {
         relations: ["creator", "updater", "deleter"],
       });
       return res.json(car);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: error });
+    }
+  }
+
+  public async getSearchCars(req: Request, res: Response) {
+    try {
+      const data = req.query as {
+        withDriver: string;
+        startRent: string;
+        capacity: string;
+      };
+      const withDriver = data.withDriver === "true" ? true : false;
+      const startRent = data.startRent ? new Date(data.startRent) : new Date();
+      const capacity = data.capacity ? parseInt(data.capacity) : 1;
+      console.log(
+        typeof data.withDriver,
+        typeof data.startRent,
+        typeof data.capacity
+      );
+      const cars = await dataSource
+        .getRepository(Car)
+        .createQueryBuilder("car")
+        .where("car.withDriver = :withDriver", { withDriver })
+        .andWhere("car.capacity >= :capacity", { capacity })
+        .andWhere("car.endRent IS NULL OR car.endRent <= :startRent", {
+          startRent,
+        })
+        .getMany();
+      const carsWithImageUrls = cars.map((car) => ({
+        ...car,
+        imageUrl: `http://localhost:${process.env.PORT}/uploads/${car.image}`,
+      }));
+      return res.json(carsWithImageUrls);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: error });

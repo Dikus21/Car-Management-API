@@ -70,7 +70,7 @@ export default class UserController {
         { userId, userName, userEmail, userRole },
         process.env.ACCESS_TOKEN_SECRET!,
         {
-          expiresIn: "5s",
+          expiresIn: "1h",
         }
       );
       const refreshToken = jwt.sign(
@@ -88,7 +88,7 @@ export default class UserController {
       });
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        maxAge: 5 * 1000,
+        maxAge: 60 * 60 * 1000,
       });
       res.json({ accessToken });
     } catch (error) {

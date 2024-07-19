@@ -7,6 +7,7 @@ import upload from "../middlewares/Upload";
 import validateDTO from "../middlewares/DTOValidator";
 import UserRegister from "../dtos/UserRegister";
 import CarRegister from "../dtos/CarRegister";
+import CarSearch from "../dtos/CarSearch";
 
 
 const router = Router();
@@ -28,6 +29,7 @@ router.post('/refresh-token', RefreshToken.refreshToken);
 // Car routes
 router.post('/car', verifyToken('ADMIN', 'SUPER_ADMIN'),  upload.single("image"), validateDTO(CarRegister),carController.addCar);
 router.get('/car/list', verifyToken('PUBLIC'), carController.getCars);
+router.get('/car/search', validateDTO(CarSearch), carController.getSearchCars);
 router.get('/car/:id', verifyToken('PUBLIC'), carController.getCarById);
 router.put('/car/:id', verifyToken('ADMIN', 'SUPER_ADMIN'), upload.single("image"), carController.updateCar);
 router.delete('/car/:id', verifyToken('ADMIN', 'SUPER_ADMIN'), carController.deleteCar);
