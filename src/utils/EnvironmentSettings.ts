@@ -4,8 +4,8 @@ export default class EnvironmentSettings {
   private envFile: string | undefined;
 
   constructor() {
-    this.envFile = process.env.ENV_FILE;
     dotenv.config();
+    this.envFile = process.env.ENV_FILE || "prod";
     dotenv.config({ path: `./.env.${this.envFile}` });
   }
 }
