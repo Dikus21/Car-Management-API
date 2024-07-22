@@ -4,9 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon ./src/index.ts",
-    "start": "node ./dist/index.js",
+    "vercel-build":"echo 'vercel-build'",
     "build": "tsc",
+    "start": "node ./dist/index.js",
+    "dev": "nodemon ./src/index.ts",
     "typeorm": "typeorm-ts-node-commonjs",
     "initiateMigration": "npm run typeorm migration:generate -- -d src/config/Database.ts src/migrations/InitialMigration",
     "migrate": "npm run typeorm migration:run -- -d src/config/Database.ts",
