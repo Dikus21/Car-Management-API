@@ -5,4 +5,3 @@ yarn.lock
 .vercel
 .env.dev
 .env.staging
-vercel.json
