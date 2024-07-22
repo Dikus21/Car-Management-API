@@ -1,19 +1,20 @@
-import {DataSourceOptions, DataSource} from "typeorm";
-import dotenv from 'dotenv'
+import { DataSourceOptions, DataSource } from "typeorm";
 import path from "path";
+import dotenv from "dotenv";
+import EnvironmentSettings from "../utils/EnvironmentSettings";
 
-dotenv.config();
+new EnvironmentSettings();
 
 const db: DataSourceOptions = {
-    type:'postgres',
-    host:process.env.DB_HOST,
-    port:parseInt(process.env.DB_PORT as string),
-    username:process.env.DB_USERNAME,
-    password:process.env.DB_PASS,
-    database:process.env.DB_NAME,
-    synchronize:true,
-    entities:[path.join(__dirname, '../entities/**')],
-    migrations:[path.join(__dirname, '../migrations/**')]
+  type: "postgres",
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT as string),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  synchronize: true,
+  entities: [path.join(__dirname, "../entities/**")],
+  migrations: [path.join(__dirname, "../migrations/**")],
 };
 
 const dataSource = new DataSource(db);
