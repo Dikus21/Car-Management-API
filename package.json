@@ -4,14 +4,14 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "vercel-build":"echo 'vercel-build'",
+    "vercel-build": "echo 'vercel-build'",
     "build": "tsc",
     "start": "node ./dist/index.js",
     "dev": "nodemon ./src/index.ts",
     "typeorm": "typeorm-ts-node-commonjs",
-    "initiateMigration": "npm run typeorm migration:generate -- -d src/config/Database.ts src/migrations/InitialMigration",
-    "migrate": "npm run typeorm migration:run -- -d src/config/Database.ts",
-    "revertMigration": "npm run typeorm migration:revert -- -d src/config/Database.ts",
+    "initiateMigration": "yarn run typeorm migration:generate -- -d src/config/Database.ts src/migrations/InitialMigration",
+    "migrate": "yarn run typeorm migration:run -- -d src/config/Database.ts",
+    "revertMigration": "yarn run typeorm migration:revert -- -d src/config/Database.ts",
     "seeder": "ts-node ./src/seeders/RunSeeders.ts"
   },
   "keywords": [],

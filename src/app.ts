@@ -10,7 +10,6 @@ import router from "./routes/Routes";
 import morgan from "morgan";
 import cors from "cors";
 import errorMiddleware from "./middlewares/ErrorMiddleware";
-import path from "path";
 
 dataSource
   .initialize()
