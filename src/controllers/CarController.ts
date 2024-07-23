@@ -42,7 +42,7 @@ export default class CarController {
       });
       const carsWithImageUrls = cars.map((car) => ({
         ...car,
-        imageUrl: `http://localhost:${process.env.PORT}/uploads/${car.image}`,
+        imageUrl: `${process.env.API_URL}/uploads/${car.image}`,
       }));
       return res.json(carsWithImageUrls);
     } catch (error) {
@@ -90,7 +90,7 @@ export default class CarController {
         .getMany();
       const carsWithImageUrls = cars.map((car) => ({
         ...car,
-        imageUrl: `http://localhost:${process.env.PORT}/uploads/${car.image}`,
+        imageUrl: `${process.env.API_URL}/uploads/${car.image}`,
       }));
       return res.json(carsWithImageUrls);
     } catch (error) {
