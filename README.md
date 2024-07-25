@@ -1,6 +1,6 @@
 # Car-Management-API
 
-This Repository is made to complete challenge synrgy-7, creating and implementing RESTful API utilizing expressjs framework.
+This Repository is made to complete synrgy-7 challenge, creating and implementing RESTful API utilizing expressjs framework.
 
 Documentation : https://documenter.getpostman.com/view/30534452/2sA3QwcACz
 
