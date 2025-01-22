@@ -1,5 +1,10 @@
+import path from "path";
 import dataSource from "../config/Database";
 import { Car } from "../entities/Car";
+import {
+  cloudinaryUpload,
+  uploadToCloudinary,
+} from "../middlewares/cloudinaryUpload";
 
 export default async function carSeeder() {
   const cars = [
@@ -325,20 +330,32 @@ export default async function carSeeder() {
       type: "Wagon",
       year: "2015",
     },
-  ].map((car) => {
-    const newCar = new Car();
-    newCar.model = car.model;
-    newCar.manufacture = car.manufacture;
-    newCar.year = car.year;
-    newCar.capacity = car.capacity;
-    newCar.transmission = car.transmission;
-    newCar.withDriver = car.withDriver;
-    newCar.description = car.description;
-    newCar.rentPerDay = car.rentPerDay;
-    newCar.image = car.image;
-    return newCar;
-  });
+  ];
 
-  await dataSource.manager.save(cars);
+  const carEntities = await Promise.all(
+    cars.map(async (car) => {
+      const filePath = path.resolve(
+        __dirname,
+        "../../public/assets/uploads",
+        car.image
+      );
+      console.log(filePath);
+      const result = await uploadToCloudinary(filePath);
+      const newCar = new Car();
+      newCar.model = car.model;
+      newCar.manufacture = car.manufacture;
+      newCar.year = car.year;
+      newCar.capacity = car.capacity;
+      newCar.transmission = car.transmission;
+      newCar.withDriver = car.withDriver;
+      newCar.description = car.description;
+      newCar.rentPerDay = car.rentPerDay;
+      newCar.imagePublicId = result.public_id;
+      newCar.imageURL = result.secure_url;
+      return newCar;
+    })
+  );
+
+  await dataSource.manager.save(carEntities);
   console.log(`${cars.length} cars have been inserted`);
 }

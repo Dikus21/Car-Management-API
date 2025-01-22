@@ -17,7 +17,5 @@ export default class CarRegister {
     transmission?:string;
     @IsNotEmpty({message:"With Driver Is Required"})
     withDriver?:boolean;
-    @IsNotEmpty({message:"Image Is Required"})
-    image?:string;
     description?:string;
 }

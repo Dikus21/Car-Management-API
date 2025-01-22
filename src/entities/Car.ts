@@ -21,7 +21,9 @@ export class Car extends AbstractDate {
   @Column()
   withDriver?: boolean;
   @Column()
-  image!: string;
+  imagePublicId!: string;
+  @Column()
+  imageURL!: string;
   @Column({nullable: true})
   startRent?: Date;
   @Column({nullable: true})

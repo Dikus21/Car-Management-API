@@ -5,3 +5,6 @@ yarn.lock
 .vercel
 .env.dev
 .env.staging
+.env
+.env.prod
+public/

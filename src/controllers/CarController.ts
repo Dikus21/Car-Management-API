@@ -1,9 +1,22 @@
 import { Car } from "../entities/Car";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import dataSource from "../config/Database";
+import { NotFoundError } from "../utils/ErrorTemplates";
+import { cloudinaryUpload, deleteFromCloudinary } from "../middlewares/cloudinaryUpload";
 
 export default class CarController {
-  public async addCar(req: any, res: any) {
+
+  public async testUpload(req:any, res:Response, next:NextFunction): Promise<void> {
+    try{
+      console.log(req.files.image);
+      res.status(200).json(req.files.image.name);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  public async addCar(req: any, res: Response, next: NextFunction): Promise<void> {
     try {
       const {
         model,
@@ -15,7 +28,7 @@ export default class CarController {
         withDriver,
         description,
       } = req.body;
-      const image = req.file ? req.file.filename : null;
+      const image = await cloudinaryUpload(req);
       await Car.save({
         model: model,
         year: year,
@@ -24,47 +37,44 @@ export default class CarController {
         withDriver: withDriver,
         rentPerDay: rentPerDay,
         manufacture: manufacture,
-        image: image,
+        imagePublicId: image.public_id,
+        imageURL: image.secure_url,
         description: description,
-        creator: req.userId,
+        creator: res.locals.userId,
       });
-      return res.json({ message: "Car added successfully!" });
+      res.status(200).json({ message: "Car added successfully!" });
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      next(error);
     }
   }
 
-  public async getCars(req: Request, res: Response) {
+  public async getCars(req: Request, res: Response, next: NextFunction) {
     try {
       const cars = await Car.find({
         relations: ["creator", "updater", "deleter"],
       });
-      const carsWithImageUrls = cars.map((car) => ({
-        ...car,
-        imageUrl: `${process.env.API_URL}/uploads/${car.image}`,
-      }));
-      return res.json(carsWithImageUrls);
+      res.json(cars);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      next(error);
     }
   }
 
-  public async getCarById(req: any, res: Response) {
+  public async getCarById(req: any, res: Response, next: NextFunction) {
     try {
       const car = await Car.findOne({
         where: { id: req.params.id },
         relations: ["creator", "updater", "deleter"],
       });
-      return res.json(car);
+      res.json(car);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      next(error);
     }
   }
 
-  public async getSearchCars(req: Request, res: Response) {
+  public async getSearchCars(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.query as {
         withDriver: string;
@@ -88,21 +98,17 @@ export default class CarController {
           startRent,
         })
         .getMany();
-      const carsWithImageUrls = cars.map((car) => ({
-        ...car,
-        imageUrl: `${process.env.API_URL}/uploads/${car.image}`,
-      }));
-      return res.json(carsWithImageUrls);
+
+      res.json(cars);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      next(error);
     }
   }
 
-  public async updateCar(req: any, res: any) {
+  public async updateCar(req: any, res: Response, next: NextFunction) {
     try {
       // const {model, year, price} = req.body;
-      const image = req.file ? req.file.filename : null;
       const car = await Car.findOne({
         where: { id: req.params.id },
       });
@@ -112,31 +118,36 @@ export default class CarController {
             (car as any)[key] = req.body[key];
           }
         });
-        if (image) car.image = image;
+        if (req.files) {
+          const image = await cloudinaryUpload(req);
+          await deleteFromCloudinary(car.imagePublicId);
+          car.imagePublicId = image.public_id;
+          car.imageURL = image.secure_url;
+        }
         await car.save();
         res.status(200).json({
           message: "Update success",
           car,
         });
       } else {
-        res.status(404).json({ message: "Car not found!" });
+        throw new NotFoundError("Car not found");
       }
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      next(error)
     }
   }
 
-  public async deleteCar(req: any, res: any) {
+  public async deleteCar(req: Request, res: Response, next: NextFunction) {
     try {
       await Car.update(req.params.id, {
         deletedAt: new Date(),
-        deleter: req.userId,
+        deleter: res.locals.userId,
       });
-      return res.json({ message: "Car deleted successfully!" });
+      res.json({ message: "Car deleted successfully!" });
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      next(error)
     }
   }
 }

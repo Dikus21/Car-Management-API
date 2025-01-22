@@ -2,7 +2,7 @@ import EnvironmentSettings from "./utils/EnvironmentSettings";
 new EnvironmentSettings();
 
 import "reflect-metadata";
-import express from "express";
+import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import dataSource from "./config/Database";
@@ -10,6 +10,7 @@ import router from "./routes/Routes";
 import morgan from "morgan";
 import cors from "cors";
 import errorMiddleware from "./middlewares/ErrorMiddleware";
+import fileUpload from "express-fileupload";
 
 dataSource
   .initialize()
@@ -26,7 +27,14 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use("/uploads", express.static("public/assets/uploads"));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
+
+// app.use("/uploads", express.static("public/assets/uploads"));
 
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
@@ -40,6 +48,8 @@ app.use(router);
 app.use(errorMiddleware);
 
 //Default route
-app.get("/", (req, res) => res.send("Express on Vercel"));
+app.get("/", (req: Request, res: Response) => {
+  res.send("Express on vercel");
+});
 
 export default app;

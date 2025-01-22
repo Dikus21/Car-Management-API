@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 
-export default function validateDTO(dto: any) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+export default function validateDTO(dto: any) {  
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const isBodyEmpty: boolean = Object.keys(req.body).length === 0;
 
     const object = plainToInstance(dto, isBodyEmpty ? req.query : req.body);
@@ -16,14 +16,13 @@ export default function validateDTO(dto: any) {
       errors.forEach((error) => {
         const constraints = error.constraints;
         if (constraints) {
-          console.log(constraints);
+          // console.log(constraints);
           errorMessages[error.property] = Object.values(constraints).join("; ");
         }
       });
-
-      return res.status(400).json(errorMessages);
+      res.status(400).json(errorMessages);
+      return;
     }
-
     next();
-  };
+  }
 }
