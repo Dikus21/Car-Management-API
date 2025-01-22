@@ -4,7 +4,6 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "vercel-build": "echo 'vercel-build'",
     "build": "tsc",
     "start": "node ./dist/index.js",
     "dev": "nodemon ./src/server.ts",
