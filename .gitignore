@@ -1,10 +1,11 @@
 node_modules/
 data/
-dist/
+# dist/
 yarn.lock
 .vercel
 .env.dev
 .env.staging
 .env
 .env.prod
+api/
 public/

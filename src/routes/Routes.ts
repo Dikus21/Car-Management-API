@@ -1,4 +1,4 @@
-import {Router} from "express";
+import {Request, Response, Router} from "express";
 import UserController from "../controllers/UserController";
 import CarController from "../controllers/CarController";
 import RefreshToken from "../controllers/RefreshToken";
@@ -13,6 +13,10 @@ const router = Router();
 const userController = new UserController();
 const carController = new CarController();
 
+router.get('/test', (req:Request, res:Response) => {
+    console.log("ROUTE ON ROUTER ACCESSES");
+    res.send("HELLO TEST SUCCESS");
+});
 
 // User routes
 router.post('/user', validateDTO(UserRegister),userController.registerUser);   
