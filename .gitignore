@@ -1,7 +1,6 @@
 node_modules/
 data/
 dist/
-yarn.lock
 .vercel
 .env.dev
 .env.staging
