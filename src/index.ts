@@ -49,8 +49,8 @@ app.use(errorMiddleware);
 
 //Default route
 app.get("/", (req: Request, res: Response) => {
-  console.log("Route on index accessed")
-  res.send("Express on vercel");
+  console.log("API ACTIVE");
+  res.send("API ACTIVE");
 });
 
 export default app;
