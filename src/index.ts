@@ -11,15 +11,16 @@ import morgan from "morgan";
 import cors from "cors";
 import errorMiddleware from "./middlewares/ErrorMiddleware";
 import fileUpload from "express-fileupload";
+import { databaseInitializer } from "./middlewares/DatabaseInitializer";
 
-dataSource
-  .initialize()
-  .then(() => {
-    console.log("Database Connected");
-  })
-  .catch((err) => {
-    console.error("Database Connection Error: ", err);
-  });
+// dataSource
+//   .initialize()
+//   .then(() => {
+//     console.log("Database Connected");
+//   })
+//   .catch((err) => {
+//     console.error("Database Connection Error: ", err);
+//   });
 
 const app = express();
 const corsOptions = {
@@ -42,6 +43,8 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 //Middleware to parse JSON
 app.use(bodyParser.json());
+//Database initializer
+app.use(databaseInitializer);
 //Use the router
 app.use(router);
 //Error handling middleware

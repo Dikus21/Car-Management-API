@@ -1,6 +1,5 @@
 import { DataSourceOptions, DataSource } from "typeorm";
 import path from "path";
-import dotenv from "dotenv";
 import EnvironmentSettings from "../utils/EnvironmentSettings";
 
 new EnvironmentSettings();
