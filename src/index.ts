@@ -13,15 +13,6 @@ import errorMiddleware from "./middlewares/ErrorMiddleware";
 import fileUpload from "express-fileupload";
 import { databaseInitializer } from "./middlewares/DatabaseInitializer";
 
-// dataSource
-//   .initialize()
-//   .then(() => {
-//     console.log("Database Connected");
-//   })
-//   .catch((err) => {
-//     console.error("Database Connection Error: ", err);
-//   });
-
 const app = express();
 const corsOptions = {
   origin: process.env.CLIENT_URL,
